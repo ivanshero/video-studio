@@ -1,0 +1,235 @@
+/* =============================================
+   الإطارات الإسلامية - Islamic Frames
+   ============================================= */
+
+.islamic-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Corner Base Styles */
+.frame-corner {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--primary-color);
+  opacity: 0.8;
+}
+
+.frame-corner.top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+.frame-corner.top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+.frame-corner.bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+.frame-corner.bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+
+/* Border Lines */
+.frame-border {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  opacity: 0.5;
+}
+
+.frame-border.top,
+.frame-border.bottom {
+  height: 2px;
+  left: 120px;
+  right: 120px;
+}
+
+.frame-border.top { top: 20px; }
+.frame-border.bottom { bottom: 20px; }
+
+.frame-border.left,
+.frame-border.right {
+  width: 2px;
+  top: 120px;
+  bottom: 120px;
+  background: linear-gradient(180deg, transparent, var(--primary-color), transparent);
+}
+
+.frame-border.left { left: 20px; }
+.frame-border.right { right: 20px; }
+
+/* Center Decorations */
+.frame-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame-center.top { top: 10px; }
+.frame-center.bottom { bottom: 10px; }
+
+.frame-center::before {
+  content: '✦';
+  color: var(--primary-color);
+  font-size: 24px;
+  opacity: 0.8;
+}
+
+/* =============================================
+   Frame Variations
+   ============================================= */
+
+/* Classic */
+.frame-classic .frame-corner {
+  border-width: 3px;
+  border-radius: 0;
+}
+
+/* Ornate */
+.frame-ornate .frame-corner {
+  border-width: 4px;
+  border-radius: 10px;
+}
+
+.frame-ornate .frame-corner::before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: var(--primary-color);
+  border-radius: 50%;
+}
+
+.frame-ornate .frame-corner.top-right::before { top: -8px; right: -8px; }
+.frame-ornate .frame-corner.top-left::before { top: -8px; left: -8px; }
+.frame-ornate .frame-corner.bottom-right::before { bottom: -8px; right: -8px; }
+.frame-ornate .frame-corner.bottom-left::before { bottom: -8px; left: -8px; }
+
+/* Geometric */
+.frame-geometric .frame-corner {
+  border: none;
+  background: linear-gradient(45deg, var(--primary-color) 25%, transparent 25%),
+              linear-gradient(-45deg, var(--primary-color) 25%, transparent 25%);
+  background-size: 20px 20px;
+  opacity: 0.4;
+}
+
+/* Arabesque */
+.frame-arabesque .frame-corner {
+  border-radius: 50% 0 50% 0;
+  border-width: 4px;
+}
+
+.frame-arabesque .frame-corner.top-left,
+.frame-arabesque .frame-corner.bottom-right {
+  border-radius: 0 50% 0 50%;
+}
+
+/* Minimal */
+.frame-minimal .frame-corner {
+  width: 40px;
+  height: 40px;
+  border-width: 2px;
+}
+
+.frame-minimal .frame-border {
+  opacity: 0.3;
+}
+
+.frame-minimal .frame-center::before {
+  content: '◇';
+  font-size: 16px;
+}
+
+/* Royal */
+.frame-royal .frame-corner {
+  width: 100px;
+  height: 100px;
+  border-width: 4px;
+}
+
+.frame-royal .frame-corner::after {
+  content: '♕';
+  position: absolute;
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.frame-royal .frame-corner.top-right::after { top: 5px; right: 5px; }
+.frame-royal .frame-corner.top-left::after { top: 5px; left: 5px; }
+.frame-royal .frame-corner.bottom-right::after { bottom: 5px; right: 5px; }
+.frame-royal .frame-corner.bottom-left::after { bottom: 5px; left: 5px; }
+
+/* Stars */
+.frame-stars .frame-corner {
+  border: none;
+}
+
+.frame-stars .frame-corner::before {
+  content: '★';
+  font-size: 40px;
+  color: var(--primary-color);
+  opacity: 0.6;
+}
+
+.frame-stars .frame-center::before {
+  content: '☆';
+}
+
+/* Crescent */
+.frame-crescent .frame-corner::before {
+  content: '☪';
+  font-size: 30px;
+  color: var(--primary-color);
+  position: absolute;
+}
+
+.frame-crescent .frame-corner {
+  border: none;
+}
+
+.frame-crescent .frame-center::before {
+  content: '☪';
+  font-size: 28px;
+}
+
+/* Calligraphy */
+.frame-calligraphy .frame-corner {
+  border-style: double;
+  border-width: 4px;
+}
+
+.frame-calligraphy .frame-center::before {
+  content: 'بسم الله';
+  font-family: 'Amiri', serif;
+  font-size: 18px;
+}
+
+/* Mosaic */
+.frame-mosaic .frame-corner {
+  background: repeating-conic-gradient(
+    var(--primary-color) 0deg 90deg,
+    transparent 90deg 180deg
+  );
+  background-size: 10px 10px;
+  border: none;
+  opacity: 0.3;
+}
+
+/* Dome */
+.frame-dome .frame-corner.top-right,
+.frame-dome .frame-corner.top-left {
+  border-radius: 0 0 50% 50%;
+  width: 100px;
+  height: 50px;
+}
+
+.frame-dome .frame-center.top::before {
+  content: '🕌';
+  font-size: 30px;
+}
+
+.frame-dome .frame-center.bottom::before {
+  content: '✦';
+}

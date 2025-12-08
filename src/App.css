@@ -1,0 +1,12 @@
+/* =============================================
+   التطبيق الرئيسي - Main App Styles
+   ============================================= */
+
+.app {
+  display: flex;
+  flex-direction: row-reverse;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--background-dark);
+}

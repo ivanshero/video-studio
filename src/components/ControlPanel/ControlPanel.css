@@ -1,0 +1,339 @@
+/* =============================================
+   لوحة التحكم - Control Panel Styles
+   ============================================= */
+
+.control-panel {
+  width: 350px;
+  min-width: 350px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--background-medium) 0%, var(--background-dark) 100%);
+  border-left: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.panel-header {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--background-light) 0%, var(--background-medium) 100%);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.panel-header h2 {
+  font-family: 'Amiri', serif;
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.islamic-ornament {
+  height: 20px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20'%3E%3Cpath d='M0,10 Q25,0 50,10 T100,10 T150,10 T200,10' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+  mask-size: contain;
+  margin-top: 10px;
+  opacity: 0.5;
+}
+
+.control-section {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.control-section h3 {
+  font-size: 0.95rem;
+  color: var(--text-accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Inputs */
+.islamic-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  transition: all var(--transition-normal);
+  margin-bottom: 10px;
+}
+
+.islamic-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px var(--shadow-color);
+}
+
+textarea.islamic-input {
+  resize: vertical;
+  min-height: 70px;
+}
+
+select.islamic-input {
+  cursor: pointer;
+}
+
+/* Buttons */
+.islamic-btn {
+  padding: 10px 16px;
+  border: 2px solid var(--primary-color);
+  background: transparent;
+  color: var(--primary-color);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.islamic-btn:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: var(--background-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.islamic-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.islamic-btn.primary {
+  background: var(--primary-color);
+  color: var(--background-dark);
+}
+
+.islamic-btn.primary:hover {
+  background: var(--primary-light);
+}
+
+.islamic-btn.full-width {
+  width: 100%;
+}
+
+/* Media Type Buttons */
+.media-type-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.media-type-btn {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--background-dark);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-type-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.media-type-btn.active {
+  background: var(--primary-color);
+  color: var(--background-dark);
+  border-color: var(--primary-color);
+}
+
+.media-preview-name {
+  padding: 8px 12px;
+  background: var(--background-light);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+
+/* Navigation */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.nav-counter {
+  flex: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Theme Options */
+.theme-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.theme-btn:hover,
+.theme-btn.active {
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.theme-btn.active {
+  border-width: 3px;
+  border-color: white;
+}
+
+.theme-gold { background: #d4af37; }
+.theme-emerald { background: #2e7d32; }
+.theme-royal { background: #1a237e; }
+.theme-sunset { background: #bf360c; }
+.theme-purple { background: #7b1fa2; }
+.theme-teal { background: #00796b; }
+
+/* Frame & Effect Options */
+.frame-options,
+.effect-options {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.frame-btn,
+.effect-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--background-dark);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.frame-btn:hover,
+.effect-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.frame-btn.active,
+.effect-btn.active {
+  background: var(--primary-color);
+  color: var(--background-dark);
+  border-color: var(--primary-color);
+}
+
+/* Background Options */
+.bg-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bg-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.bg-btn:hover,
+.bg-btn.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  border-color: white;
+}
+
+/* Speed Control */
+.speed-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.speed-control label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.speed-control input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-color);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Recording Status */
+.recording-status {
+  margin-top: auto;
+  background: var(--background-light);
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+.shortcut-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.shortcut-hint kbd {
+  background: var(--background-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  margin-left: 4px;
+}

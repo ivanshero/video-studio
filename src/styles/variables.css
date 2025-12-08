@@ -1,0 +1,211 @@
+/* =============================================
+   المتغيرات الأساسية - CSS Variables
+   ============================================= */
+
+:root {
+  /* Theme Colors - Default Gold */
+  --primary-color: #d4af37;
+  --primary-light: #f4d03f;
+  --primary-dark: #b8860b;
+  --accent-color: #c9a227;
+  --shadow-color: rgba(212, 175, 55, 0.3);
+  
+  /* Background Colors */
+  --background-dark: #0a0a0f;
+  --background-medium: #12121a;
+  --background-light: #1a1a25;
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-accent: #d4af37;
+  
+  /* Border */
+  --border-color: rgba(212, 175, 55, 0.3);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* =============================================
+   Theme Variations
+   ============================================= */
+
+[data-theme="emerald"] {
+  --primary-color: #2e7d32;
+  --primary-light: #4caf50;
+  --primary-dark: #1b5e20;
+  --accent-color: #388e3c;
+  --shadow-color: rgba(46, 125, 50, 0.3);
+  --text-accent: #4caf50;
+  --border-color: rgba(46, 125, 50, 0.3);
+}
+
+[data-theme="royal"] {
+  --primary-color: #1a237e;
+  --primary-light: #3949ab;
+  --primary-dark: #0d1642;
+  --accent-color: #283593;
+  --shadow-color: rgba(26, 35, 126, 0.3);
+  --text-accent: #5c6bc0;
+  --border-color: rgba(63, 81, 181, 0.3);
+}
+
+[data-theme="sunset"] {
+  --primary-color: #bf360c;
+  --primary-light: #e64a19;
+  --primary-dark: #8c2703;
+  --accent-color: #d84315;
+  --shadow-color: rgba(191, 54, 12, 0.3);
+  --text-accent: #ff7043;
+  --border-color: rgba(230, 74, 25, 0.3);
+}
+
+[data-theme="purple"] {
+  --primary-color: #7b1fa2;
+  --primary-light: #9c27b0;
+  --primary-dark: #4a148c;
+  --accent-color: #8e24aa;
+  --shadow-color: rgba(123, 31, 162, 0.3);
+  --text-accent: #ba68c8;
+  --border-color: rgba(156, 39, 176, 0.3);
+}
+
+[data-theme="teal"] {
+  --primary-color: #00796b;
+  --primary-light: #009688;
+  --primary-dark: #004d40;
+  --accent-color: #00897b;
+  --shadow-color: rgba(0, 121, 107, 0.3);
+  --text-accent: #4db6ac;
+  --border-color: rgba(0, 150, 136, 0.3);
+}
+
+/* =============================================
+   Background Themes
+   ============================================= */
+
+[data-background="dark-night"] {
+  --background-dark: #0a0a0f;
+  --background-medium: #12121a;
+  --background-light: #1a1a25;
+  --text-primary: #ffffff;
+}
+
+[data-background="cream"] {
+  --background-dark: #f5f0e6;
+  --background-medium: #ebe5d8;
+  --background-light: #e0d9c8;
+  --text-primary: #2c2c2c;
+  --text-secondary: #555555;
+}
+
+[data-background="ocean"] {
+  --background-dark: #0d3b4c;
+  --background-medium: #154d62;
+  --background-light: #1d5f78;
+  --text-primary: #ffffff;
+}
+
+[data-background="forest"] {
+  --background-dark: #1a3c2a;
+  --background-medium: #224e38;
+  --background-light: #2a6046;
+  --text-primary: #ffffff;
+}
+
+[data-background="purple"] {
+  --background-dark: #1a1025;
+  --background-medium: #251535;
+  --background-light: #301a45;
+  --text-primary: #ffffff;
+}
+
+[data-background="warm-sunset"] {
+  --background-dark: #2c1810;
+  --background-medium: #3d2218;
+  --background-light: #4e2c20;
+  --text-primary: #ffffff;
+}
+
+[data-background="light-sky"] {
+  --background-dark: #e8f4f8;
+  --background-medium: #d4e9f0;
+  --background-light: #c0dee8;
+  --text-primary: #1a3c4c;
+  --text-secondary: #3a5a6c;
+}
+
+[data-background="rose"] {
+  --background-dark: #2c1520;
+  --background-medium: #3d1d2c;
+  --background-light: #4e2538;
+  --text-primary: #ffffff;
+}
+
+[data-background="midnight"] {
+  --background-dark: #0f0f1a;
+  --background-medium: #181825;
+  --background-light: #212130;
+  --text-primary: #ffffff;
+}
+
+[data-background="earthy"] {
+  --background-dark: #3d2b1f;
+  --background-medium: #4e3828;
+  --background-light: #5f4531;
+  --text-primary: #ffffff;
+}
+
+/* =============================================
+   Global Styles
+   ============================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Cairo', 'Amiri', sans-serif;
+  background: var(--background-dark);
+  color: var(--text-primary);
+  direction: rtl;
+  line-height: 1.6;
+}
+
+/* Arabic Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap');
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary-color);
+  color: var(--background-dark);
+}

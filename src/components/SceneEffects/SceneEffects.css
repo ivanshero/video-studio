@@ -1,0 +1,786 @@
+/* =============================================
+   تأثيرات المشهد - Scene Effects
+   ============================================= */
+
+.scene-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* =============================================
+   1. النيازك - Shooting Stars
+   ============================================= */
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+  border-radius: 50%;
+  top: var(--top, 20%);
+  right: -100px;
+  opacity: 0;
+  animation: shootingStar 4s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes shootingStar {
+  0% {
+    transform: translateX(0) translateY(0) rotate(-45deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-120vw) translateY(100vh) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   2. نقاط متلألئة - Twinkling Dots
+   ============================================= */
+.twinkle-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  animation: twinkle 2s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* =============================================
+   3. فقاعات - Bubbles
+   ============================================= */
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  left: var(--left, 50%);
+  width: var(--size, 20px);
+  height: var(--size, 20px);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatUp var(--duration, 8s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(30px);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   4. غبار - Dust Particles
+   ============================================= */
+.dust-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--primary-light);
+  border-radius: 50%;
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  opacity: 0.5;
+  animation: floatDust 15s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes floatDust {
+  0% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-30px) translateX(20px); }
+  50% { transform: translateY(-10px) translateX(-20px); }
+  75% { transform: translateY(-40px) translateX(10px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+/* =============================================
+   5. موجات ضوئية - Light Waves
+   ============================================= */
+.light-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: waveExpand 4s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes waveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(10);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   6. نجوم دوارة - Spinning Stars
+   ============================================= */
+.spin-star {
+  position: absolute;
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  font-size: var(--size, 20px);
+  color: var(--primary-color);
+  opacity: 0.4;
+  animation: spinStar 10s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes spinStar {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.4; }
+  50% { transform: rotate(180deg) scale(1.2); opacity: 0.8; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.4; }
+}
+
+/* =============================================
+   7. ثلج - Snow
+   ============================================= */
+.snowflake {
+  position: absolute;
+  top: -30px;
+  left: var(--left, 50%);
+  font-size: var(--size, 12px);
+  color: var(--primary-light);
+  opacity: 0;
+  animation: snowFall var(--duration, 10s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes snowFall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.5; }
+  100% {
+    transform: translateY(110vh) translateX(50px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   8. هالة متوهجة - Glowing Orbs
+   ============================================= */
+.glow-orb {
+  position: absolute;
+  left: var(--left, 30%);
+  top: var(--top, 30%);
+  width: var(--size, 100px);
+  height: var(--size, 100px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0.2;
+  filter: blur(20px);
+  animation: orbFloat 8s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+  25% { transform: translate(50px, -30px) scale(1.2); opacity: 0.3; }
+  50% { transform: translate(0, -50px) scale(0.8); opacity: 0.15; }
+  75% { transform: translate(-50px, -20px) scale(1.1); opacity: 0.25; }
+}
+
+/* =============================================
+   9. حلقات - Rings
+   ============================================= */
+.ring {
+  position: absolute;
+  left: var(--left, 10%);
+  top: var(--top, 10%);
+  width: var(--size, 50px);
+  height: var(--size, 50px);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: ringPulse 3s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+/* =============================================
+   10. خطوط متحركة - Moving Lines
+   ============================================= */
+.moving-line {
+  position: absolute;
+  top: -50px;
+  left: var(--left, 10%);
+  width: 2px;
+  height: var(--height, 50px);
+  background: linear-gradient(to bottom, transparent, var(--primary-color), transparent);
+  opacity: 0;
+  animation: lineMove 6s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes lineMove {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+/* =============================================
+   11. جزيئات - Particles
+   ============================================= */
+.particle {
+  position: absolute;
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  width: var(--size, 4px);
+  height: var(--size, 4px);
+  background: var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat var(--duration, 5s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  box-shadow: 0 0 calc(var(--size, 4px) * 2) var(--primary-color);
+}
+
+@keyframes particleFloat {
+  0% { 
+    transform: translate(0, 0) scale(0);
+    opacity: 0; 
+  }
+  20% { 
+    opacity: 0.8; 
+    transform: translate(calc(var(--direction, 1) * 30px), -20px) scale(1);
+  }
+  80% {
+    opacity: 0.6;
+    transform: translate(calc(var(--direction, 1) * -30px), 20px) scale(0.8);
+  }
+  100% { 
+    transform: translate(0, 0) scale(0);
+    opacity: 0; 
+  }
+}
+
+/* =============================================
+   12. يراعات - Fireflies
+   ============================================= */
+.firefly {
+  position: absolute;
+  left: var(--start-x, 50%);
+  top: var(--start-y, 50%);
+  width: 8px;
+  height: 8px;
+  background: #fff9c4;
+  border-radius: 50%;
+  opacity: 0;
+  filter: blur(1px);
+  box-shadow: 
+    0 0 10px #fff9c4,
+    0 0 20px #ffeb3b,
+    0 0 30px #ffc107;
+  animation: fireflyGlow var(--duration, 12s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes fireflyGlow {
+  0% { 
+    transform: translate(0, 0);
+    opacity: 0; 
+  }
+  10% { opacity: 1; }
+  50% { 
+    transform: translate(
+      calc(var(--end-x, 80%) - var(--start-x, 50%)), 
+      calc(var(--end-y, 30%) - var(--start-y, 50%))
+    );
+    opacity: 0.3;
+  }
+  60% { opacity: 1; }
+  90% { opacity: 0.5; }
+  100% { 
+    transform: translate(0, 0);
+    opacity: 0; 
+  }
+}
+
+/* =============================================
+   13. شفق قطبي - Aurora
+   ============================================= */
+.aurora-wave {
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  width: 200%;
+  height: 60%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsla(var(--hue-start, 120), 80%, 50%, 0.1) 30%,
+    hsla(var(--hue-end, 180), 80%, 50%, 0.2) 60%,
+    transparent 100%
+  );
+  filter: blur(30px);
+  opacity: 0.5;
+  animation: auroraWave 10s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes auroraWave {
+  0%, 100% { 
+    transform: translateX(0) skewX(-5deg);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translateX(10%) skewX(5deg);
+    opacity: 0.6;
+  }
+}
+
+/* =============================================
+   14. مجرة - Galaxy
+   ============================================= */
+.galaxy-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(5px);
+  transform: translate(-50%, -50%);
+  animation: galaxyPulse 3s ease-in-out infinite;
+}
+
+.galaxy-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size, 2px);
+  height: var(--size, 2px);
+  background: var(--primary-light);
+  border-radius: 50%;
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateX(var(--distance, 30%));
+  opacity: 0.6;
+  animation: galaxySpin 20s linear infinite, twinkle 2s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes galaxyPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.5); }
+}
+
+@keyframes galaxySpin {
+  from { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateX(var(--distance, 30%)); }
+  to { transform: translate(-50%, -50%) rotate(calc(var(--angle, 0deg) + 360deg)) translateX(var(--distance, 30%)); }
+}
+
+/* =============================================
+   15. ماتريكس - Matrix
+   ============================================= */
+.matrix-column {
+  position: absolute;
+  top: -100%;
+  left: var(--left, 10%);
+  display: flex;
+  flex-direction: column;
+  font-family: monospace;
+  font-size: 14px;
+  color: var(--primary-color);
+  text-shadow: 0 0 10px var(--primary-color);
+  animation: matrixFall var(--duration, 5s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.matrix-column span {
+  opacity: 0;
+  animation: matrixChar 0.5s ease-out forwards;
+  animation-delay: var(--char-delay, 0s);
+}
+
+@keyframes matrixFall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(250%); }
+}
+
+@keyframes matrixChar {
+  0% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* =============================================
+   16. نبض - Heartbeat
+   ============================================= */
+.heartbeat-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  border: 3px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  animation: heartbeatPulse 1.5s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes heartbeatPulse {
+  0% { 
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1; 
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.5;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0; 
+  }
+}
+
+/* =============================================
+   17. قصاصات - Confetti
+   ============================================= */
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  left: var(--left, 50%);
+  width: 12px;
+  height: 12px;
+  background: hsla(var(--hue, 0), 80%, 60%, 0.8);
+  border-radius: var(--shape, 0);
+  opacity: 0;
+  animation: confettiFall var(--duration, 6s) ease-in infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  100% {
+    transform: translateY(110vh) rotate(var(--rotation, 720deg));
+    opacity: 0.3;
+  }
+}
+
+/* =============================================
+   18. مطر - Rain
+   ============================================= */
+.raindrop {
+  position: absolute;
+  top: -20px;
+  left: var(--left, 50%);
+  width: 2px;
+  height: var(--size, 20px);
+  background: linear-gradient(to bottom, transparent, var(--primary-color));
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  animation: rainFall var(--duration, 0.8s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes rainFall {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.6; }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   19. أوراق - Leaves
+   ============================================= */
+.leaf {
+  position: absolute;
+  top: -30px;
+  left: var(--left, 50%);
+  font-size: 20px;
+  opacity: 0;
+  animation: leafFall var(--duration, 10s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes leafFall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.8; }
+  50% {
+    transform: translateY(50vh) translateX(var(--sway, 30px)) rotate(180deg);
+  }
+  100% {
+    transform: translateY(110vh) translateX(calc(var(--sway, 30px) * -1)) rotate(var(--rotation, 360deg));
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   20. أشكال هندسية - Geometric Shapes
+   ============================================= */
+.geometric-shape {
+  position: absolute;
+  left: var(--left, 50%);
+  top: var(--top, 50%);
+  width: var(--size, 40px);
+  height: var(--size, 40px);
+  border: 2px solid var(--primary-color);
+  opacity: 0.3;
+  animation: geometricFloat 8s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.scene-effects .geometric-shape:nth-child(3n+1) {
+  border-radius: 0;
+}
+
+.scene-effects .geometric-shape:nth-child(3n+2) {
+  border-radius: 50%;
+}
+
+.scene-effects .geometric-shape:nth-child(3n) {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+@keyframes geometricFloat {
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translate(20px, -30px) rotate(90deg);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: translate(-10px, -50px) rotate(180deg);
+    opacity: 0.3;
+  }
+  75% { 
+    transform: translate(-30px, -20px) rotate(270deg);
+    opacity: 0.5;
+  }
+}
+
+/* =============================================
+   21. ليزر - Laser
+   ============================================= */
+.laser-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsla(var(--hue, 0), 100%, 60%, 0.8) 50%,
+    transparent 100%
+  );
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(var(--angle, 0deg));
+  opacity: 0;
+  box-shadow: 0 0 10px hsla(var(--hue, 0), 100%, 60%, 0.8);
+  animation: laserScan 3s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes laserScan {
+  0%, 100% { opacity: 0; }
+  20% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  80% { opacity: 0.8; }
+}
+
+/* =============================================
+   22. موشور - Prism
+   ============================================= */
+.prism-center {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 50px solid rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  filter: blur(2px);
+}
+
+.prism-ray {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  width: 70%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsla(var(--hue, 0), 100%, 60%, 0.6) 20%,
+    hsla(var(--hue, 0), 100%, 60%, 0.8) 50%,
+    transparent 100%
+  );
+  transform-origin: left center;
+  transform: rotate(var(--angle, 0deg));
+  opacity: 0;
+  animation: prismRay 4s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes prismRay {
+  0%, 100% { opacity: 0; }
+  30% { opacity: 0.8; }
+  70% { opacity: 0.8; }
+}
+
+/* =============================================
+   23. طاقة - Energy Field
+   ============================================= */
+.energy-field {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size, 200px);
+  height: var(--size, 200px);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  animation: energyPulse 3s ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes energyPulse {
+  0% { 
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0.8;
+    border-width: 4px;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+/* =============================================
+   24. دخان - Smoke
+   ============================================= */
+.smoke-puff {
+  position: absolute;
+  bottom: 0;
+  left: var(--left, 50%);
+  width: var(--size, 100px);
+  height: var(--size, 100px);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  filter: blur(20px);
+  animation: smokeRise var(--duration, 10s) ease-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes smokeRise {
+  0% { 
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% { opacity: 0.4; }
+  100% { 
+    transform: translateY(-100vh) scale(2);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   25. أثر لامع - Sparkle Trail
+   ============================================= */
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size, 6px);
+  height: var(--size, 6px);
+  background: var(--primary-light);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 
+    0 0 calc(var(--size, 6px) * 1.5) var(--primary-color),
+    0 0 calc(var(--size, 6px) * 3) var(--primary-light);
+  animation: sparkleTrail 4s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes sparkleTrail {
+  0% { 
+    transform: translate(-50%, -50%) translate(0, 0);
+    opacity: 0;
+  }
+  25% { 
+    transform: translate(-50%, -50%) translate(var(--path-x, 20%), var(--path-y, -20%));
+    opacity: 1;
+  }
+  50% { 
+    transform: translate(-50%, -50%) translate(
+      calc(var(--path-x, 20%) * 2), 
+      calc(var(--path-y, -20%) * 2)
+    );
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(-50%, -50%) translate(var(--path-x, 20%), var(--path-y, -20%));
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-50%, -50%) translate(0, 0);
+    opacity: 0;
+  }
+}
