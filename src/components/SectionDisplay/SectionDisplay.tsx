@@ -1,5 +1,6 @@
 import type { Section } from '../../types';
 import { useState, useEffect } from 'react';
+import { Maximize2, Minimize2 } from 'lucide-react';
 import './SectionDisplay.css';
 
 interface SectionDisplayProps {
@@ -8,6 +9,7 @@ interface SectionDisplayProps {
 
 export function SectionDisplay({ section }: SectionDisplayProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isPdfExpanded, setIsPdfExpanded] = useState(false);
 
   // Load article content for link type
   useEffect(() => {
@@ -61,6 +63,28 @@ export function SectionDisplay({ section }: SectionDisplayProps) {
                 </a>
               </div>
             )}
+          </div>
+        );
+
+      case 'pdf':
+        return section.mediaUrl && (
+          <div className={`section-pdf ${isPdfExpanded ? 'expanded' : ''}`}>
+            <div className="pdf-header">
+              <span className="pdf-icon">📄</span>
+              <span className="pdf-name">{section.mediaName || 'ملف PDF'}</span>
+              <button 
+                className="pdf-expand-btn"
+                onClick={() => setIsPdfExpanded(!isPdfExpanded)}
+                title={isPdfExpanded ? 'تصغير' : 'تكبير'}
+              >
+                {isPdfExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
+            </div>
+            <iframe 
+              src={`${section.mediaUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+              className="pdf-viewer"
+              title="PDF Viewer"
+            />
           </div>
         );
 

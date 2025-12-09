@@ -26,3 +26,7 @@ dist-ssr
 # Electron
 release/
 *.exe
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

@@ -9,7 +9,11 @@ import { useState, useRef } from 'react';
 import type { MediaType } from '../../types';
 import './ControlPanel.css';
 
-export function ControlPanel() {
+interface ControlPanelProps {
+  onExpandedClick?: () => void;
+}
+
+export function ControlPanel({ onExpandedClick }: ControlPanelProps) {
   const {
     sections,
     currentSectionIndex,
@@ -31,7 +35,6 @@ export function ControlPanel() {
     setAnimationType,
     animationSpeed,
     setAnimationSpeed,
-    setExpandedSectionsOpen,
     isAvatarVisible,
     setAvatarVisible,
   } = useAppStore();
@@ -160,6 +163,13 @@ export function ControlPanel() {
           >
             <Link size={18} />
           </button>
+          <button 
+            className={`media-type-btn ${mediaType === 'pdf' ? 'active' : ''}`}
+            onClick={() => { setMediaType('pdf'); fileInputRef.current?.click(); }}
+            title="ملف PDF"
+          >
+            📄
+          </button>
         </div>
 
         <input
@@ -207,7 +217,7 @@ export function ControlPanel() {
         </div>
         <button 
           className="islamic-btn full-width"
-          onClick={() => setExpandedSectionsOpen(true)}
+          onClick={() => onExpandedClick?.()}
         >
           <Expand size={18} /> عرض جميع الأقسام
         </button>

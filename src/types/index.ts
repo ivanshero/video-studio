@@ -1,6 +1,6 @@
 // أنواع البيانات الرئيسية
 
-export type MediaType = 'none' | 'image' | 'video' | 'audio' | 'link';
+export type MediaType = 'none' | 'image' | 'video' | 'audio' | 'link' | 'pdf';
 
 export interface Section {
   id: string;

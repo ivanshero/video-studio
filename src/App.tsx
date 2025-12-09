@@ -1,12 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useAppStore } from './stores/useAppStore';
+import { ModeSelection } from './components/ModeSelection/ModeSelection';
+import { CameraStudio } from './components/CameraStudio/CameraStudio';
+import { MobileView } from './components/MobileView/MobileView';
 import { ControlPanel } from './components/ControlPanel/ControlPanel';
 import { PresentationArea } from './components/PresentationArea/PresentationArea';
 import { AvatarDisplay } from './components/AvatarDisplay/AvatarDisplay';
+import { ExpandedSections } from './components/ExpandedSections/ExpandedSections';
 import './App.css';
 
+type AppMode = 'selection' | 'camera' | 'presentation' | 'mobile';
+
 function App() {
+  const [mode, setMode] = useState<AppMode>('selection');
+  const [expandedOpen, setExpandedOpen] = useState(false);
+  
   const { 
     theme, 
     background,
@@ -18,8 +27,14 @@ function App() {
     setAvatarVisible,
   } = useAppStore();
 
-  // Keyboard shortcuts
+  const handleModeSelect = (selectedMode: 'camera' | 'presentation' | 'mobile') => {
+    setMode(selectedMode);
+  };
+
+  // Keyboard shortcuts (only for presentation mode)
   useEffect(() => {
+    if (mode !== 'presentation') return;
+    
     let scrollInterval: number | null = null;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -72,12 +87,34 @@ function App() {
       window.removeEventListener('keyup', handleKeyUp);
       if (scrollInterval) clearInterval(scrollInterval);
     };
-  }, [nextSection, prevSection, setAutoScrolling, isAutoScrolling]);
+  }, [mode, nextSection, prevSection, setAutoScrolling, isAutoScrolling]);
 
+  // Mode Selection Screen
+  if (mode === 'selection') {
+    return <ModeSelection onSelectMode={handleModeSelect} />;
+  }
+
+  // Camera Mode
+  if (mode === 'camera') {
+    return <CameraStudio onBack={() => setMode('selection')} />;
+  }
+
+  // Mobile Mode
+  if (mode === 'mobile') {
+    return <MobileView onBack={() => setMode('selection')} />;
+  }
+
+  // Presentation Mode (without camera)
   return (
     <div className="app" data-theme={theme} data-background={background}>
-      <ControlPanel />
+      <ControlPanel onExpandedClick={() => setExpandedOpen(true)} />
       <PresentationArea />
+      
+      {/* Expanded Sections Modal */}
+      <ExpandedSections 
+        isOpen={expandedOpen} 
+        onClose={() => setExpandedOpen(false)} 
+      />
       
       {/* Avatar Display */}
       <AnimatePresence>

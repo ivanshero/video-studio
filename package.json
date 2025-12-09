@@ -1,45 +1,13 @@
 {
-  "name": "islamic-video-studio",
+  "name": "project-v2",
   "private": true,
-  "version": "1.0.0",
-  "description": "استوديو الفيديو الإسلامي - Islamic Video Studio",
-  "author": "Islamic Video Studio",
-  "main": "electron/main.cjs",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "electron": "electron .",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "dist": "npm run build && electron-builder",
-    "dist:win": "npm run build && electron-builder --win --x64"
-  },
-  "build": {
-    "appId": "com.islamic.videostudio",
-    "productName": "استوديو الفيديو الإسلامي",
-    "copyright": "Copyright © 2024",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "electron/**/*"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
-      "icon": "public/icon.ico",
-      "artifactName": "${productName}-${version}-Portable.${ext}"
-    },
-    "portable": {
-      "artifactName": "${productName}-Portable.${ext}"
-    }
+    "preview": "vite preview"
   },
   "dependencies": {
     "framer-motion": "^12.23.25",
