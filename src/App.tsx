@@ -4,13 +4,14 @@ import { useAppStore } from './stores/useAppStore';
 import { ModeSelection } from './components/ModeSelection/ModeSelection';
 import { CameraStudio } from './components/CameraStudio/CameraStudio';
 import { MobileView } from './components/MobileView/MobileView';
+import { TelegramDesigner } from './components/TelegramDesigner/TelegramDesigner';
 import { ControlPanel } from './components/ControlPanel/ControlPanel';
 import { PresentationArea } from './components/PresentationArea/PresentationArea';
 import { AvatarDisplay } from './components/AvatarDisplay/AvatarDisplay';
 import { ExpandedSections } from './components/ExpandedSections/ExpandedSections';
 import './App.css';
 
-type AppMode = 'selection' | 'camera' | 'presentation' | 'mobile';
+type AppMode = 'selection' | 'camera' | 'presentation' | 'mobile' | 'telegram';
 
 function App() {
   const [mode, setMode] = useState<AppMode>('selection');
@@ -27,7 +28,7 @@ function App() {
     setAvatarVisible,
   } = useAppStore();
 
-  const handleModeSelect = (selectedMode: 'camera' | 'presentation' | 'mobile') => {
+  const handleModeSelect = (selectedMode: 'camera' | 'presentation' | 'mobile' | 'telegram') => {
     setMode(selectedMode);
   };
 
@@ -102,6 +103,11 @@ function App() {
   // Mobile Mode
   if (mode === 'mobile') {
     return <MobileView onBack={() => setMode('selection')} />;
+  }
+
+  // Telegram Designer Mode
+  if (mode === 'telegram') {
+    return <TelegramDesigner onBack={() => setMode('selection')} />;
   }
 
   // Presentation Mode (without camera)

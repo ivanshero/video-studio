@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { Camera, CameraOff, Sparkles, Smartphone } from 'lucide-react';
+import { Camera, CameraOff, Sparkles, Smartphone, Send } from 'lucide-react';
 import './ModeSelection.css';
 
 interface ModeSelectionProps {
-  onSelectMode: (mode: 'camera' | 'presentation' | 'mobile') => void;
+  onSelectMode: (mode: 'camera' | 'presentation' | 'mobile' | 'telegram') => void;
 }
 
 export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
@@ -93,6 +93,25 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
               <li>تحكم سهل بالسحب</li>
               <li>دائرة فقاعات صوتية</li>
               <li>مثالي للعرض على الجوال</li>
+            </ul>
+          </motion.button>
+
+          {/* Telegram Designer */}
+          <motion.button
+            className="mode-option telegram"
+            onClick={() => onSelectMode('telegram')}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="mode-option-icon">
+              <Send size={48} />
+            </div>
+            <h3>تصميم التلغرام</h3>
+            <p>إنشاء منشورات احترافية</p>
+            <ul>
+              <li>تنسيقات وخطوط متعددة</li>
+              <li>خلفيات وزخارف جميلة</li>
+              <li>تحميل كصورة PNG</li>
             </ul>
           </motion.button>
         </div>

@@ -183,6 +183,12 @@
   color: #9c27b0;
 }
 
+.mode-option.telegram:hover .mode-option-icon {
+  background: rgba(0, 136, 204, 0.2);
+  border-color: #0088cc;
+  color: #0088cc;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .mode-title {

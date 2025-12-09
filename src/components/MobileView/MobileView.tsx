@@ -154,7 +154,7 @@ export const MobileView = ({ onBack }: MobileViewProps) => {
             y: Math.sin(angle * Math.PI / 180) * distance,
           }}
           transition={{ 
-            duration: 1.5,
+            duration: 2.5,
             delay,
             ease: "easeOut"
           }}
@@ -218,7 +218,7 @@ export const MobileView = ({ onBack }: MobileViewProps) => {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             >
               {/* Section Title */}
               <h2 className="mobile-section-title">{currentSection.title}</h2>
