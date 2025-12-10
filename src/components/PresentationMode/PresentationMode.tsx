@@ -383,23 +383,23 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
           animate={{ opacity: 1, scale: 1 }}
           onMouseDown={() => setIsDragging(true)}
         >
-          {/* Voice Ripples */}
-          {isSpeaking && (
-            <>
-              <div className="pm-voice-ripple ripple-1" style={{ width: speakerSize + 40, height: speakerSize + 40 }} />
-              <div className="pm-voice-ripple ripple-2" style={{ width: speakerSize + 70, height: speakerSize + 70 }} />
-              <div className="pm-voice-ripple ripple-3" style={{ width: speakerSize + 100, height: speakerSize + 100 }} />
-            </>
-          )}
-          
+          {/* Speaker Avatar with Ripples */}
           <div 
             className="pm-speaker-avatar"
             style={{ width: speakerSize, height: speakerSize }}
           >
+            {/* Voice Ripples - inside avatar for proper centering */}
+            {isSpeaking && (
+              <div className="pm-speaker-ripples" style={{ width: speakerSize, height: speakerSize }}>
+                <div className="pm-voice-ripple ripple-1" style={{ width: speakerSize * 1.2, height: speakerSize * 1.2 }} />
+                <div className="pm-voice-ripple ripple-2" style={{ width: speakerSize * 1.4, height: speakerSize * 1.4 }} />
+                <div className="pm-voice-ripple ripple-3" style={{ width: speakerSize * 1.6, height: speakerSize * 1.6 }} />
+              </div>
+            )}
             {speakerImage ? (
               <img src={speakerImage} alt="Speaker" />
             ) : (
-              <User size={speakerSize * 0.4} />
+              <User size={speakerSize * 0.4} style={{ position: 'relative', zIndex: 5 }} />
             )}
           </div>
           

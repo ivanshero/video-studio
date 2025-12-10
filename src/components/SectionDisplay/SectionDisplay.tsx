@@ -194,13 +194,6 @@ export function SectionDisplay({ section }: SectionDisplayProps) {
                   renderAnnotationLayer={false}
                 />
               </Document>
-              
-              {/* Scroll hint */}
-              {numPages && numPages > 1 && (
-                <div className="pdf-scroll-hint">
-                  مرر للأسفل للصفحة التالية
-                </div>
-              )}
             </div>
           </div>
         );
