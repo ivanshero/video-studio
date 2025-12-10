@@ -20,7 +20,10 @@ import {
   Music,
   FileText,
   Link,
-  Type
+  Type,
+  User,
+  Move,
+  Mic
 } from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
 import { themeColors, frames, backgrounds, sceneEffects } from '../../utils/constants';
@@ -79,7 +82,20 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   
+  // Speaker Avatar State
+  const [showSpeaker, setShowSpeaker] = useState(false);
+  const [speakerImage, setSpeakerImage] = useState<string | null>(null);
+  const [speakerName, setSpeakerName] = useState('');
+  const [speakerSize, setSpeakerSize] = useState(120);
+  const [speakerPosition, setSpeakerPosition] = useState({ x: 50, y: 80 });
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showSpeakerSettings, setShowSpeakerSettings] = useState(false);
+  
   const hideTimeoutRef = useRef<number | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   const currentSection = sections[currentSectionIndex];
 
@@ -91,15 +107,15 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
     setShowHeader(true);
     hideTimeoutRef.current = window.setTimeout(() => {
       // Only hide if no sidebar is open
-      if (!showSettings && !showSections) {
+      if (!showSettings && !showSections && !showSpeakerSettings) {
         setShowHeader(false);
       }
     }, 3000);
-  }, [showSettings, showSections]);
+  }, [showSettings, showSections, showSpeakerSettings]);
 
   // Show header when sidebars are open
   useEffect(() => {
-    if (showSettings || showSections) {
+    if (showSettings || showSections || showSpeakerSettings) {
       setShowHeader(true);
       if (hideTimeoutRef.current) {
         clearTimeout(hideTimeoutRef.current);
@@ -107,7 +123,7 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
     } else {
       resetHideTimeout();
     }
-  }, [showSettings, showSections, resetHideTimeout]);
+  }, [showSettings, showSections, showSpeakerSettings, resetHideTimeout]);
 
   // Initial hide timeout
   useEffect(() => {
@@ -118,6 +134,80 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
       }
     };
   }, [resetHideTimeout]);
+
+  // Voice detection for speaker
+  useEffect(() => {
+    if (!showSpeaker) {
+      setIsSpeaking(false);
+      return;
+    }
+
+    let stream: MediaStream | null = null;
+
+    const startVoiceDetection = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContextRef.current = new AudioContext();
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        const source = audioContextRef.current.createMediaStreamSource(stream);
+        source.connect(analyserRef.current);
+        analyserRef.current.fftSize = 256;
+
+        const bufferLength = analyserRef.current.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        const detectVoice = () => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArray);
+          const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+          setIsSpeaking(average > 30);
+          animationFrameRef.current = requestAnimationFrame(detectVoice);
+        };
+
+        detectVoice();
+      } catch (err) {
+        console.log('Microphone access denied');
+      }
+    };
+
+    startVoiceDetection();
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [showSpeaker]);
+
+  // Handle speaker drag
+  const handleSpeakerDrag = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setSpeakerPosition({ 
+      x: Math.max(5, Math.min(95, x)), 
+      y: Math.max(5, Math.min(95, y)) 
+    });
+  };
+
+  // Handle speaker image upload
+  const handleSpeakerImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setSpeakerImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Auto play
   useEffect(() => {
@@ -224,31 +314,83 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
       className="presentation-mode" 
       data-theme={theme}
       style={getBackgroundStyle()}
-      onMouseMove={resetHideTimeout}
+      onMouseMove={(e) => {
+        resetHideTimeout();
+        handleSpeakerDrag(e);
+      }}
+      onMouseUp={() => setIsDragging(false)}
+      onMouseLeave={() => setIsDragging(false)}
     >
       {/* Scene Effects */}
       <SceneEffects effect={sceneEffect} />
 
-      {/* Header - Auto Hide */}
+      {/* Floating Buttons - Auto Hide */}
       <AnimatePresence>
         {showHeader && (
-          <motion.div 
-            className="pm-header"
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -80, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onMouseEnter={() => {
-              if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-              setShowHeader(true);
-            }}
-            onMouseLeave={resetHideTimeout}
-          >
-            <button className="pm-btn pm-back-btn" onClick={onBack}>
+          <>
+            {/* Top Left - Back Button */}
+            <motion.button 
+              className="pm-floating-btn pm-back-btn"
+              style={{ top: 20, left: 20 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              onClick={onBack}
+              title="الرئيسية"
+            >
               <Home size={20} />
-            </button>
-            
-            <div className="pm-header-center">
+            </motion.button>
+
+            {/* Top Right - Action Buttons */}
+            <motion.div 
+              className="pm-floating-group"
+              style={{ top: 20, right: 20 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+            >
+              <button 
+                className={`pm-floating-btn ${showSpeakerSettings ? 'active' : ''}`}
+                onClick={() => {
+                  setShowSpeakerSettings(!showSpeakerSettings);
+                  setShowSettings(false);
+                  setShowSections(false);
+                }}
+                title="المتحدث"
+              >
+                <User size={20} />
+              </button>
+              <button 
+                className={`pm-floating-btn ${showSections ? 'active' : ''}`}
+                onClick={() => {
+                  setShowSections(!showSections);
+                  setShowSettings(false);
+                  setShowSpeakerSettings(false);
+                }}
+                title="الأقسام"
+              >
+                <Layers size={20} />
+              </button>
+              <button 
+                className={`pm-floating-btn ${showSettings ? 'active' : ''}`}
+                onClick={() => {
+                  setShowSettings(!showSettings);
+                  setShowSections(false);
+                  setShowSpeakerSettings(false);
+                }}
+                title="الإعدادات"
+              >
+                <Settings size={20} />
+              </button>
+            </motion.div>
+
+            {/* Bottom Center - Navigation */}
+            <motion.div 
+              className="pm-floating-nav"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+            >
               <button 
                 className="pm-nav-btn"
                 onClick={prevSection}
@@ -272,34 +414,48 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
               >
                 {isAutoPlay ? <Pause size={18} /> : <Play size={18} />}
               </button>
-            </div>
-
-            <div className="pm-header-actions">
-              <button 
-                className={`pm-btn ${showSections ? 'active' : ''}`}
-                onClick={() => {
-                  setShowSections(!showSections);
-                  setShowSettings(false);
-                }}
-              >
-                <Layers size={20} />
-              </button>
-              <button 
-                className={`pm-btn ${showSettings ? 'active' : ''}`}
-                onClick={() => {
-                  setShowSettings(!showSettings);
-                  setShowSections(false);
-                }}
-              >
-                <Settings size={20} />
-              </button>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
+      {/* Speaker Avatar */}
+      {showSpeaker && (
+        <motion.div 
+          className={`pm-speaker ${isSpeaking ? 'speaking' : ''} ${isDragging ? 'dragging' : ''}`}
+          style={{
+            left: `${speakerPosition.x}%`,
+            top: `${speakerPosition.y}%`,
+            width: speakerSize,
+            height: speakerSize + (speakerName ? 30 : 0),
+          }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onMouseDown={() => setIsDragging(true)}
+        >
+          <div 
+            className="pm-speaker-avatar"
+            style={{ width: speakerSize, height: speakerSize }}
+          >
+            {speakerImage ? (
+              <img src={speakerImage} alt="Speaker" />
+            ) : (
+              <User size={speakerSize * 0.5} />
+            )}
+            <div className="pm-speaker-glow" />
+            {isSpeaking && <div className="pm-speaker-pulse" />}
+          </div>
+          {speakerName && (
+            <div className="pm-speaker-name">{speakerName}</div>
+          )}
+          <div className="pm-speaker-drag-handle">
+            <Move size={14} />
+          </div>
+        </motion.div>
+      )}
+
       {/* Main Content Area */}
-      <div className={`pm-content ${showSettings || showSections ? 'with-sidebar' : ''}`}>
+      <div className={`pm-content ${showSettings || showSections || showSpeakerSettings ? 'with-sidebar' : ''}`}>
         <div className="pm-frame-container">
           <IslamicFrame />
           <AnimatePresence mode="wait">
@@ -328,6 +484,105 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Speaker Settings Sidebar */}
+      <AnimatePresence>
+        {showSpeakerSettings && (
+          <motion.div
+            className="pm-sidebar pm-speaker-sidebar"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25 }}
+          >
+            <div className="pm-sidebar-header">
+              <h3>إعدادات المتحدث</h3>
+              <button onClick={() => setShowSpeakerSettings(false)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="pm-speaker-settings">
+              {/* Toggle Speaker */}
+              <div className="pm-setting-row">
+                <span>إظهار المتحدث</span>
+                <button 
+                  className={`pm-toggle ${showSpeaker ? 'active' : ''}`}
+                  onClick={() => setShowSpeaker(!showSpeaker)}
+                >
+                  {showSpeaker ? 'مفعّل' : 'معطّل'}
+                </button>
+              </div>
+
+              {/* Speaker Image */}
+              <div className="pm-setting-group">
+                <label>صورة المتحدث</label>
+                <div className="pm-speaker-image-upload">
+                  <div className="pm-speaker-preview">
+                    {speakerImage ? (
+                      <img src={speakerImage} alt="Preview" />
+                    ) : (
+                      <User size={40} />
+                    )}
+                  </div>
+                  <label className="pm-upload-btn">
+                    <Upload size={16} />
+                    <span>اختر صورة</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSpeakerImageUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  {speakerImage && (
+                    <button 
+                      className="pm-clear-btn"
+                      onClick={() => setSpeakerImage(null)}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Speaker Name */}
+              <div className="pm-setting-group">
+                <label>اسم المتحدث</label>
+                <input
+                  type="text"
+                  placeholder="أدخل الاسم..."
+                  value={speakerName}
+                  onChange={(e) => setSpeakerName(e.target.value)}
+                />
+              </div>
+
+              {/* Speaker Size */}
+              <div className="pm-setting-group">
+                <label>حجم المتحدث: {speakerSize}px</label>
+                <input
+                  type="range"
+                  min="60"
+                  max="200"
+                  value={speakerSize}
+                  onChange={(e) => setSpeakerSize(Number(e.target.value))}
+                />
+              </div>
+
+              {/* Mic Status */}
+              <div className="pm-mic-status">
+                <Mic size={20} />
+                <span>{isSpeaking ? 'يتحدث...' : 'صامت'}</span>
+                <div className={`pm-mic-indicator ${isSpeaking ? 'active' : ''}`} />
+              </div>
+
+              <p className="pm-speaker-tip">
+                💡 اسحب المتحدث لتغيير موقعه على الشاشة
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Sections Sidebar */}
       <AnimatePresence>

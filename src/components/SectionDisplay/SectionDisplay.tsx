@@ -1,7 +1,11 @@
 import type { Section } from '../../types';
 import { useState, useEffect } from 'react';
-import { Maximize2, Minimize2 } from 'lucide-react';
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
 import './SectionDisplay.css';
+
+// Set up PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface SectionDisplayProps {
   section: Section;
@@ -10,6 +14,8 @@ interface SectionDisplayProps {
 export function SectionDisplay({ section }: SectionDisplayProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPdfExpanded, setIsPdfExpanded] = useState(false);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Load article content for link type
   useEffect(() => {
@@ -19,6 +25,16 @@ export function SectionDisplay({ section }: SectionDisplayProps) {
       setIsLoading(false);
     }
   }, [section.linkUrl, section.mediaType]);
+
+  // Reset page when section changes
+  useEffect(() => {
+    setCurrentPage(1);
+    setNumPages(null);
+  }, [section.id]);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+  };
 
   const renderMedia = () => {
     switch (section.mediaType) {
@@ -72,19 +88,48 @@ export function SectionDisplay({ section }: SectionDisplayProps) {
             <div className="pdf-header">
               <span className="pdf-icon">📄</span>
               <span className="pdf-name">{section.mediaName || 'ملف PDF'}</span>
-              <button 
-                className="pdf-expand-btn"
-                onClick={() => setIsPdfExpanded(!isPdfExpanded)}
-                title={isPdfExpanded ? 'تصغير' : 'تكبير'}
-              >
-                {isPdfExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-              </button>
+              <div className="pdf-controls">
+                {numPages && numPages > 1 && (
+                  <div className="pdf-nav">
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage <= 1}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                    <span>{currentPage} / {numPages}</span>
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))}
+                      disabled={currentPage >= numPages}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                  </div>
+                )}
+                <button 
+                  className="pdf-expand-btn"
+                  onClick={() => setIsPdfExpanded(!isPdfExpanded)}
+                  title={isPdfExpanded ? 'تصغير' : 'تكبير'}
+                >
+                  {isPdfExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                </button>
+              </div>
             </div>
-            <iframe 
-              src={`${section.mediaUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-              className="pdf-viewer"
-              title="PDF Viewer"
-            />
+            <div className="pdf-viewer-container">
+              <Document
+                file={section.mediaUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                loading={<div className="pdf-loading">جاري تحميل PDF...</div>}
+                error={<div className="pdf-error">فشل في تحميل الملف</div>}
+              >
+                <Page 
+                  pageNumber={currentPage} 
+                  width={isPdfExpanded ? 800 : 500}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                />
+              </Document>
+            </div>
           </div>
         );
 

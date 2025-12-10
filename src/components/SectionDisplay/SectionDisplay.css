@@ -155,6 +155,48 @@
   text-overflow: ellipsis;
 }
 
+.pdf-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.pdf-nav button {
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.pdf-nav button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pdf-nav button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pdf-nav span {
+  font-size: 0.85rem;
+  min-width: 60px;
+  text-align: center;
+}
+
 .pdf-expand-btn {
   background: var(--primary-color);
   color: var(--background-dark);
@@ -173,12 +215,38 @@
   transform: scale(1.1);
 }
 
-.pdf-viewer {
+.pdf-viewer-container {
   flex: 1;
-  border: none;
-  background: white;
-  width: 100%;
-  transition: all 0.3s ease;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.pdf-viewer-container .react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf-viewer-container .react-pdf__Page {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pdf-loading,
+.pdf-error {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.pdf-error {
+  color: #e74c3c;
 }
 
 /* PDF Expanded State */
@@ -193,8 +261,8 @@
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
-.section-pdf.expanded .pdf-viewer {
-  height: calc(95vh - 60px);
+.section-pdf.expanded .pdf-viewer-container {
+  height: calc(95vh - 70px);
 }
 
 /* Layout variations based on media type */
