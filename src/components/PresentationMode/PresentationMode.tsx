@@ -4,14 +4,10 @@ import {
   Settings, 
   Layers, 
   Home, 
-  ChevronLeft, 
-  ChevronRight, 
   Palette,
   Frame,
   Sparkles,
   Image as ImageIcon,
-  Play,
-  Pause,
   X,
   Plus,
   Trash2,
@@ -79,7 +75,6 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
   const [newMediaUrl, setNewMediaUrl] = useState<string | null>(null);
   const [newMediaName, setNewMediaName] = useState<string | null>(null);
   const [newLinkUrl, setNewLinkUrl] = useState('');
-  const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   
   // Speaker Avatar State
@@ -208,17 +203,6 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
       reader.readAsDataURL(file);
     }
   };
-
-  // Auto play
-  useEffect(() => {
-    if (!isAutoPlay || sections.length <= 1) return;
-    
-    const interval = setInterval(() => {
-      nextSection();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlay, nextSection, sections.length]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -383,56 +367,31 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
                 <Settings size={20} />
               </button>
             </motion.div>
-
-            {/* Bottom Center - Navigation */}
-            <motion.div 
-              className="pm-floating-nav"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-            >
-              <button 
-                className="pm-nav-btn"
-                onClick={prevSection}
-                disabled={sections.length <= 1}
-              >
-                <ChevronRight size={20} />
-              </button>
-              <span className="pm-section-indicator">
-                {sections.length > 0 ? `${currentSectionIndex + 1} / ${sections.length}` : '0 / 0'}
-              </span>
-              <button 
-                className="pm-nav-btn"
-                onClick={nextSection}
-                disabled={sections.length <= 1}
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button 
-                className={`pm-nav-btn ${isAutoPlay ? 'active' : ''}`}
-                onClick={() => setIsAutoPlay(!isAutoPlay)}
-              >
-                {isAutoPlay ? <Pause size={18} /> : <Play size={18} />}
-              </button>
-            </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Speaker Avatar */}
+      {/* Speaker Avatar with Voice Ripples */}
       {showSpeaker && (
         <motion.div 
           className={`pm-speaker ${isSpeaking ? 'speaking' : ''} ${isDragging ? 'dragging' : ''}`}
           style={{
             left: `${speakerPosition.x}%`,
             top: `${speakerPosition.y}%`,
-            width: speakerSize,
-            height: speakerSize + (speakerName ? 30 : 0),
           }}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           onMouseDown={() => setIsDragging(true)}
         >
+          {/* Voice Ripples */}
+          {isSpeaking && (
+            <>
+              <div className="pm-voice-ripple ripple-1" style={{ width: speakerSize + 40, height: speakerSize + 40 }} />
+              <div className="pm-voice-ripple ripple-2" style={{ width: speakerSize + 70, height: speakerSize + 70 }} />
+              <div className="pm-voice-ripple ripple-3" style={{ width: speakerSize + 100, height: speakerSize + 100 }} />
+            </>
+          )}
+          
           <div 
             className="pm-speaker-avatar"
             style={{ width: speakerSize, height: speakerSize }}
@@ -440,16 +399,16 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
             {speakerImage ? (
               <img src={speakerImage} alt="Speaker" />
             ) : (
-              <User size={speakerSize * 0.5} />
+              <User size={speakerSize * 0.4} />
             )}
-            <div className="pm-speaker-glow" />
-            {isSpeaking && <div className="pm-speaker-pulse" />}
           </div>
+          
           {speakerName && (
             <div className="pm-speaker-name">{speakerName}</div>
           )}
+          
           <div className="pm-speaker-drag-handle">
-            <Move size={14} />
+            <Move size={12} />
           </div>
         </motion.div>
       )}
