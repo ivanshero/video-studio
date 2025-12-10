@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Settings, 
@@ -67,8 +67,47 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [newSectionContent, setNewSectionContent] = useState('');
   const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
+  
+  const hideTimeoutRef = useRef<number | null>(null);
 
   const currentSection = sections[currentSectionIndex];
+
+  // Function to reset hide timeout
+  const resetHideTimeout = useCallback(() => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+    setShowHeader(true);
+    hideTimeoutRef.current = window.setTimeout(() => {
+      // Only hide if no sidebar is open
+      if (!showSettings && !showSections) {
+        setShowHeader(false);
+      }
+    }, 3000);
+  }, [showSettings, showSections]);
+
+  // Show header when sidebars are open
+  useEffect(() => {
+    if (showSettings || showSections) {
+      setShowHeader(true);
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    } else {
+      resetHideTimeout();
+    }
+  }, [showSettings, showSections, resetHideTimeout]);
+
+  // Initial hide timeout
+  useEffect(() => {
+    resetHideTimeout();
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, [resetHideTimeout]);
 
   // Auto play
   useEffect(() => {
@@ -153,63 +192,79 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
       className="presentation-mode" 
       data-theme={theme}
       style={getBackgroundStyle()}
+      onMouseMove={resetHideTimeout}
     >
       {/* Scene Effects */}
       <SceneEffects effect={sceneEffect} />
 
-      {/* Header */}
-      <div className="pm-header">
-        <button className="pm-btn pm-back-btn" onClick={onBack}>
-          <Home size={20} />
-        </button>
-        
-        <div className="pm-header-center">
-          <button 
-            className="pm-nav-btn"
-            onClick={prevSection}
-            disabled={sections.length <= 1}
+      {/* Header - Auto Hide */}
+      <AnimatePresence>
+        {showHeader && (
+          <motion.div 
+            className="pm-header"
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onMouseEnter={() => {
+              if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+              setShowHeader(true);
+            }}
+            onMouseLeave={resetHideTimeout}
           >
-            <ChevronRight size={20} />
-          </button>
-          <span className="pm-section-indicator">
-            {sections.length > 0 ? `${currentSectionIndex + 1} / ${sections.length}` : '0 / 0'}
-          </span>
-          <button 
-            className="pm-nav-btn"
-            onClick={nextSection}
-            disabled={sections.length <= 1}
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button 
-            className={`pm-nav-btn ${isAutoPlay ? 'active' : ''}`}
-            onClick={() => setIsAutoPlay(!isAutoPlay)}
-          >
-            {isAutoPlay ? <Pause size={18} /> : <Play size={18} />}
-          </button>
-        </div>
+            <button className="pm-btn pm-back-btn" onClick={onBack}>
+              <Home size={20} />
+            </button>
+            
+            <div className="pm-header-center">
+              <button 
+                className="pm-nav-btn"
+                onClick={prevSection}
+                disabled={sections.length <= 1}
+              >
+                <ChevronRight size={20} />
+              </button>
+              <span className="pm-section-indicator">
+                {sections.length > 0 ? `${currentSectionIndex + 1} / ${sections.length}` : '0 / 0'}
+              </span>
+              <button 
+                className="pm-nav-btn"
+                onClick={nextSection}
+                disabled={sections.length <= 1}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                className={`pm-nav-btn ${isAutoPlay ? 'active' : ''}`}
+                onClick={() => setIsAutoPlay(!isAutoPlay)}
+              >
+                {isAutoPlay ? <Pause size={18} /> : <Play size={18} />}
+              </button>
+            </div>
 
-        <div className="pm-header-actions">
-          <button 
-            className={`pm-btn ${showSections ? 'active' : ''}`}
-            onClick={() => {
-              setShowSections(!showSections);
-              setShowSettings(false);
-            }}
-          >
-            <Layers size={20} />
-          </button>
-          <button 
-            className={`pm-btn ${showSettings ? 'active' : ''}`}
-            onClick={() => {
-              setShowSettings(!showSettings);
-              setShowSections(false);
-            }}
-          >
-            <Settings size={20} />
-          </button>
-        </div>
-      </div>
+            <div className="pm-header-actions">
+              <button 
+                className={`pm-btn ${showSections ? 'active' : ''}`}
+                onClick={() => {
+                  setShowSections(!showSections);
+                  setShowSettings(false);
+                }}
+              >
+                <Layers size={20} />
+              </button>
+              <button 
+                className={`pm-btn ${showSettings ? 'active' : ''}`}
+                onClick={() => {
+                  setShowSettings(!showSettings);
+                  setShowSections(false);
+                }}
+              >
+                <Settings size={20} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content Area */}
       <div className={`pm-content ${showSettings || showSections ? 'with-sidebar' : ''}`}>
