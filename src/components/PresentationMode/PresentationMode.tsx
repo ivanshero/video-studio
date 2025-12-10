@@ -15,10 +15,16 @@ import {
   X,
   Plus,
   Trash2,
-  Upload
+  Upload,
+  Video,
+  Music,
+  FileText,
+  Link,
+  Type
 } from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
 import { themeColors, frames, backgrounds, sceneEffects } from '../../utils/constants';
+import type { MediaType } from '../../types';
 import { SceneEffects } from '../SceneEffects/SceneEffects';
 import { IslamicFrame } from '../IslamicFrame/IslamicFrame';
 import { SectionDisplay } from '../SectionDisplay/SectionDisplay';
@@ -66,6 +72,10 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
   const [settingsTab, setSettingsTab] = useState<'theme' | 'frame' | 'background' | 'effects'>('theme');
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [newSectionContent, setNewSectionContent] = useState('');
+  const [newMediaType, setNewMediaType] = useState<MediaType>('none');
+  const [newMediaUrl, setNewMediaUrl] = useState<string | null>(null);
+  const [newMediaName, setNewMediaName] = useState<string | null>(null);
+  const [newLinkUrl, setNewLinkUrl] = useState('');
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   
@@ -171,19 +181,41 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
     }
   };
 
+  // Handle media file upload for sections
+  const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setNewMediaUrl(event.target?.result as string);
+        setNewMediaName(file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Reset new section form
+  const resetNewSectionForm = () => {
+    setNewSectionTitle('');
+    setNewSectionContent('');
+    setNewMediaType('none');
+    setNewMediaUrl(null);
+    setNewMediaName(null);
+    setNewLinkUrl('');
+  };
+
   // Add new section
   const handleAddSection = () => {
     if (newSectionTitle.trim()) {
       addSection({
         title: newSectionTitle,
         content: newSectionContent,
-        mediaType: 'none',
-        mediaUrl: null,
-        mediaName: null,
-        linkUrl: null,
+        mediaType: newMediaType,
+        mediaUrl: newMediaUrl,
+        mediaName: newMediaName,
+        linkUrl: newLinkUrl || null,
       });
-      setNewSectionTitle('');
-      setNewSectionContent('');
+      resetNewSectionForm();
     }
   };
 
@@ -328,7 +360,108 @@ export const PresentationMode = ({ onBack }: PresentationModeProps) => {
                 onChange={(e) => setNewSectionContent(e.target.value)}
                 rows={3}
               />
-              <button onClick={handleAddSection} disabled={!newSectionTitle.trim()}>
+
+              {/* Media Type Selection */}
+              <div className="pm-media-type-selector">
+                <span className="pm-media-label">نوع المحتوى:</span>
+                <div className="pm-media-buttons">
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'none' ? 'active' : ''}`}
+                    onClick={() => { setNewMediaType('none'); setNewMediaUrl(null); setNewMediaName(null); }}
+                    title="نص فقط"
+                  >
+                    <Type size={16} />
+                  </button>
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'image' ? 'active' : ''}`}
+                    onClick={() => setNewMediaType('image')}
+                    title="صورة"
+                  >
+                    <ImageIcon size={16} />
+                  </button>
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'video' ? 'active' : ''}`}
+                    onClick={() => setNewMediaType('video')}
+                    title="فيديو"
+                  >
+                    <Video size={16} />
+                  </button>
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'audio' ? 'active' : ''}`}
+                    onClick={() => setNewMediaType('audio')}
+                    title="صوت"
+                  >
+                    <Music size={16} />
+                  </button>
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'pdf' ? 'active' : ''}`}
+                    onClick={() => setNewMediaType('pdf')}
+                    title="PDF"
+                  >
+                    <FileText size={16} />
+                  </button>
+                  <button 
+                    className={`pm-media-btn ${newMediaType === 'link' ? 'active' : ''}`}
+                    onClick={() => setNewMediaType('link')}
+                    title="رابط"
+                  >
+                    <Link size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Media Upload based on type */}
+              {newMediaType !== 'none' && newMediaType !== 'link' && (
+                <div className="pm-media-upload">
+                  <label className="pm-upload-label">
+                    <Upload size={16} />
+                    <span>
+                      {newMediaName || (
+                        newMediaType === 'image' ? 'اختر صورة...' :
+                        newMediaType === 'video' ? 'اختر فيديو...' :
+                        newMediaType === 'audio' ? 'اختر ملف صوتي...' :
+                        'اختر ملف PDF...'
+                      )}
+                    </span>
+                    <input
+                      type="file"
+                      accept={
+                        newMediaType === 'image' ? 'image/*' :
+                        newMediaType === 'video' ? 'video/*' :
+                        newMediaType === 'audio' ? 'audio/*' :
+                        '.pdf'
+                      }
+                      onChange={handleMediaUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  {newMediaUrl && (
+                    <button 
+                      className="pm-clear-media"
+                      onClick={() => { setNewMediaUrl(null); setNewMediaName(null); }}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Link URL input */}
+              {newMediaType === 'link' && (
+                <input
+                  type="url"
+                  className="pm-link-input"
+                  placeholder="أدخل الرابط..."
+                  value={newLinkUrl}
+                  onChange={(e) => setNewLinkUrl(e.target.value)}
+                />
+              )}
+
+              <button 
+                className="pm-add-btn"
+                onClick={handleAddSection} 
+                disabled={!newSectionTitle.trim()}
+              >
                 <Plus size={18} />
                 <span>إضافة قسم</span>
               </button>
